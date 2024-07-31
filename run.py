@@ -7,7 +7,7 @@ import asyncio
 import aiohttp
 import uuid
 from rich import print_json
-from urllib.parse import urlparse, parse_qs
+#from urllib.parse import urlparse, parse_qs
 
 
 
