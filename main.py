@@ -12,17 +12,52 @@ from urllib.parse import urlparse, parse_qs
 
 
 
-
-
-
 DEBUG_MODE = True  # Debug模式，是否打印请求返回信息
 # PROXY = input('请输入代理，如不需要直接回车:')  # 代理，如果多次出现IP问题可尝试将自己所用的魔法设置为代理。例如：使用clash则设置为 'http://127.0.0.1:7890'
 PROXY = ''
-PUSHPLUS_TOKEN = os.getenv('PUSHPLUS_TOKEN') or ''
+PUSHPLUS_TOKEN = os.getenv('ef0a2d2e63744642875513c5dc825531') or ''
 INVITE_CODE = os.getenv('INVITE_CODE') or input('请输入邀请码: ')
 PUSH_MSG = ''
 
 
+# 检查变量
+def check_env():
+    invite_code_list = []
+    if not PUSHPLUS_TOKEN:
+        print('请按照文档设置PUSHPLUS_TOKEN环境变量')
+    if not INVITE_CODE:
+        print('请按照文档设置INVITE_CODE环境变量')
+        raise Exception('请按照文档设置INVITE_CODE环境变量')
+    else:
+        if '@' in INVITE_CODE:
+            invite_code_list = INVITE_CODE.split('@')
+        elif '\n' in INVITE_CODE:
+            invite_code_list = INVITE_CODE.split('\n')
+        else:
+            invite_code_list.append(INVITE_CODE)
+        return invite_code_list
+
+
+# 推送
+async def push(content):
+    if PUSHPLUS_TOKEN:
+        url = 'http://www.pushplus.plus/send'
+        data = {
+            "token": PUSHPLUS_TOKEN,
+            "title": 'PikPak邀请通知',
+            "content": content,
+        }
+        headers = {'Content-Type': 'application/json'}
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, headers=headers, data=json.dumps(data)) as response:
+                    response_data = await response.json()
+                    if response_data['code'] == 200:
+                        print('推送成功')
+                    else:
+                        print(f'推送失败，{response_data["msg"]}')
+        except Exception as e:
+            print(e)
 
 
 # 滑块数据加密
