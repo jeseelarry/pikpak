@@ -9,7 +9,8 @@ on:
       - '!README.md'
   schedule:
     # 每天晚六点十分执行一次
-    - cron:  '12 5 * * *'
+    #- cron:  '12 5 * * *'
+    - cron:  '22 17 * * *'
 
 jobs:
   build:
